@@ -2,8 +2,6 @@ package net.home.user;
 
 import java.sql.SQLException;
 
-import net.home.db.Database;
-
 public class User {
 	private String userId;
 	private String password;

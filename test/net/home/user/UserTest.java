@@ -2,13 +2,21 @@ package net.home.user;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import net.home.db.Database;
 
 public class UserTest {
 	
 	public static User TEST_USER = new User("userId","password","name","userId@gmail.com");
+	
+	private UserDAO userDao;
+	
+	@Before
+	public void setup() throws Exception {
+		userDao = new UserDAO();
+		userDao.removeUser(TEST_USER.getUserId());
+	}
 	
 	@Test
 	public void matchPassword() {
@@ -28,7 +36,7 @@ public class UserTest {
 	public void login() throws Exception {
 		
 		User user = UserTest.TEST_USER;
-		Database.addUser(user);
+		userDao.addUser(user);
 		assertTrue(User.login(TEST_USER.getUserId(), TEST_USER.getPassword()));
 	}
 	
@@ -41,7 +49,8 @@ public class UserTest {
 	public void loginWhenPasswordMismatch() throws Exception {
 		
 		User user = UserTest.TEST_USER;
-		Database.addUser(user);
+		UserDAO userDao = new UserDAO();
+		userDao.addUser(user);
 		
 		User.login(TEST_USER.getUserId(), "password2");
 	}
