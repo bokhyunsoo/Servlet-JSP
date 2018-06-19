@@ -1,5 +1,7 @@
 package net.home.user;
 
+import net.home.db.Database;
+
 public class User {
 	private String userId;
 	private String password;
@@ -19,9 +21,56 @@ public class User {
 		return userId;
 	}
 
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public static boolean login(String userId, String password) throws UserNotFoundException, PasswordMismatchException {
+		
+		User user = Database.findByUserId(userId);
+		
+		if(user == null){
+			throw new UserNotFoundException();
+		}
+		
+		if(!user.getPassword().equals(password)){
+			throw new PasswordMismatchException();
+		}
+		
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+	}
+
+	public boolean matchPassword(String newPassword) {
+		return this.password.equals(newPassword);
 	}
 	
 }
