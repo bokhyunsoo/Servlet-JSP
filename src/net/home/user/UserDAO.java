@@ -3,6 +3,7 @@ package net.home.user;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDAO {
@@ -21,7 +22,7 @@ public class UserDAO {
 		}
 	}
 	
-	public void insert(User user) throws SQLException{
+	public void addUser(User user) throws SQLException{
 		String sql = "insert into users values(?,?,?,?)";
 		PreparedStatement pstmt = getConnection().prepareStatement(sql);
 		pstmt.setString(1, user.getUserId());
@@ -30,6 +31,23 @@ public class UserDAO {
 		pstmt.setString(4, user.getEmail());
 		
 		pstmt.executeUpdate();
+	}
+
+	public User findByUserId(String userId) throws SQLException {
+		String sql = "select * from users where userId = ?";
+		PreparedStatement pstmt = getConnection().prepareStatement(sql);
+		pstmt.setString(1, userId);
+		
+		ResultSet rs = pstmt.executeQuery();
+		
+		if(!rs.next()){
+			return null;
+		}
+		
+		return new User(rs.getString("userId"),
+						rs.getString("password"),
+						rs.getString("name"),
+						rs.getString("email"));
 	}
 	
 }

@@ -24,7 +24,13 @@ public class UserDAOTest {
 	
 	@Test
 	public void insert() throws Exception {
-		userDao.insert(UserTest.TEST_USER);
+		userDao.addUser(UserTest.TEST_USER);
+	}
+	
+	@Test
+	public void findByUserId() throws Exception {
+		User user = userDao.findByUserId("userId");
+		assertEquals(UserTest.TEST_USER, user);
 	}
 
 }
