@@ -16,20 +16,18 @@
 			<div class="span12">
 				<section id="typography">
 				<div class="page-header">
-					<c:choose>
-						<c:when test="${not empty user.userId}">
-						<h1>개인정보수정</h1>
-						</c:when>
-						<c:otherwise>
-						<h1>회원가입</h1>
-						</c:otherwise>
-					</c:choose>
+					<c:set var="pageName" value="회원가입"/>
+					<c:if test="${isUpdate}">
+					<c:set var="pageName" value="개인정보수정"/>
+					</c:if>
+					
+					<h1>${pageName}</h1>
 					
 				</div>
 			
 				<c:set var="actionUrl" value="/users/create"/>
 				
-				<c:if test="${not empty user.userId}">
+				<c:if test="${isUpdate}">
 					<c:set var="actionUrl" value="/users/update"/>
 				</c:if>
 				<form class="form-horizontal" action="${actionUrl}" method="post">
@@ -44,7 +42,7 @@
 						<label class="control-label" for="userId">사용자 아이디</label>
 						<div class="controls">
 						<c:choose>
-						<c:when test="${not empty user.userId}">
+						<c:when test="${isUpdate}">
 							<input type="hidden" name="userId" value="${user.userId}">
 							${user.userId}
 						</c:when>
@@ -76,7 +74,7 @@
 					</div>
 					<div class="control-group">
 						<div class="controls">
-							<button type="submit" class="btn btn-primary">수정하기</button>
+							<button type="submit" class="btn btn-primary">${pageName}</button>
 						</div>
 					</div>
 				</form>
