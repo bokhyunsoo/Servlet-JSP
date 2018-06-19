@@ -17,8 +17,18 @@
 				<div class="page-header">
 					<h1>로그인</h1>
 				</div>
-			
-				
+				<%
+				Object errorMessage = request.getAttribute("errorMessage");
+				if (errorMessage != null){
+				%>
+				<div class="control-group">
+						<label class="error">
+						<%=errorMessage%>
+						</label>
+					</div>
+				<%
+				}
+				%>
 				<form class="form-horizontal" action="/login_action.jsp" method="post">
 					<div class="control-group">
 						<label class="control-label" for="userId">사용자 아이디</label>
