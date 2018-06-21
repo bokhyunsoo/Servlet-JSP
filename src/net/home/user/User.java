@@ -97,7 +97,13 @@ public class User {
 		return this.password.equals(newPassword);
 	}
 	
-	
+	public boolean isSameUser(String newUserId){
+		if (this.userId == null){
+			return false;
+		}
+		
+		return this.userId.equals(newUserId);
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
