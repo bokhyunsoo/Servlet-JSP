@@ -31,11 +31,11 @@ public class UserDAOTest {
 		User dbUser = userDao.findByUserId(user.getUserId());
 		assertEquals(user, dbUser);
 		
-		User updateUser = new User(user.getUserId(), "uPassword", "update_name", "update@slipp.net");
+		/*User updateUser = new User(user.getUserId(), "uPassword", "update_name", "update@slipp.net");
 		userDao.updateUser(updateUser);
 		
 		dbUser = userDao.findByUserId(updateUser.getUserId());
-		assertEquals(updateUser, dbUser);
+		assertEquals(updateUser, dbUser);*/
 	}
 	
 	@Test
@@ -47,10 +47,10 @@ public class UserDAOTest {
 		assertNull(dbUser);
 	}
 	
-	/*@Test
+	@Test
 	public void findByUserId() throws Exception {
 		User user = userDao.findByUserId("userId");
 		assertEquals(UserTest.TEST_USER, user);
-	}*/
+	}
 
 }
