@@ -1,4 +1,4 @@
-package net.home.support;
+package net.home.support.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ import net.home.user.UserDAO;
 
 public class JdbcTemplate {
 
-	public void executeUpdate(String sql, PreparedStatementSetter pss) throws SQLException {
+	public void executeUpdate(String sql, PreparedStatementSetter pss) {
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -24,35 +24,40 @@ public class JdbcTemplate {
 			pss.setParameters(pstmt);
 
 			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new DataAccessExcetpion(e);
 		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
 
-			if (pstmt != null) {
-				pstmt.close();
-			}
-
-			if (conn != null) {
-				conn.close();
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DataAccessExcetpion(e);
 			}
 		}
 	}
 
-	public void executeUpdate(String sql, Object... parameters) throws SQLException {
+	public void executeUpdate(String sql, Object... parameters) {
 		executeUpdate(sql, createPreparedStatementSetter(parameters));
 	}
 
-	public <T> T executeQuery(String sql, RowMapper<T> rm, PreparedStatementSetter pss) throws SQLException {
-		List<T> list = list(sql ,rm, pss);
-		if(list.isEmpty()){
+	public <T> T executeQuery(String sql, RowMapper<T> rm, PreparedStatementSetter pss) {
+		List<T> list = list(sql, rm, pss);
+		if (list.isEmpty()) {
 			return null;
 		}
 		return list.get(0);
 	}
-	
-	public <T> T executeQuery(String sql, RowMapper<T> rm, Object... parameters) throws SQLException {
+
+	public <T> T executeQuery(String sql, RowMapper<T> rm, Object... parameters){
 		return executeQuery(sql, rm, createPreparedStatementSetter(parameters));
 	}
-	
-	public <T> List<T> list(String sql, RowMapper<T> rm, PreparedStatementSetter pss) throws SQLException {
+
+	public <T> List<T> list(String sql, RowMapper<T> rm, PreparedStatementSetter pss) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -63,31 +68,37 @@ public class JdbcTemplate {
 			pss.setParameters(pstmt);
 
 			rs = pstmt.executeQuery();
-			
+
 			List<T> list = new ArrayList<T>();
-			while(rs.next()){
+			while (rs.next()) {
 				list.add(rm.mapRow(rs));
 			}
 
 			return list;
+		} catch (SQLException e) {
+			throw new DataAccessExcetpion(e);
+
 		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
 
-			if (pstmt != null) {
-				pstmt.close();
+				if (conn != null) {
+					conn.close();
+				}
+
+				if (rs != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DataAccessExcetpion(e);
 			}
-
-			if (conn != null) {
-				conn.close();
-			}
-
-			if (rs != null) {
-				conn.close();
-			}
-
 		}
 
 	}
-	public <T> List<T> list(String sql, RowMapper<T> rm, Object... parameters) throws SQLException {
+
+	public <T> List<T> list(String sql, RowMapper<T> rm, Object... parameters){
 		return list(sql, rm, createPreparedStatementSetter(parameters));
 	}
 

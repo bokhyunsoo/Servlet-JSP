@@ -18,29 +18,26 @@ import net.home.support.CharacterEncodingFilter;
 
 @WebServlet("/users/updateForm")
 public class UpdateFormUserServlet extends HttpServlet {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(UpdateFormUserServlet.class);
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
 		String userId = SessionUtils.getStringValue(session, LoginServlet.SESSION_USER_ID);
-		if (userId == null){
+		if (userId == null) {
 			resp.sendRedirect("/");
 			return;
 		}
-		
+
 		logger.debug("User Id : {}" + userId);
 		UserDAO userDao = new UserDAO();
 		User user;
-		try {
-			user = userDao.findByUserId(userId);
-			req.setAttribute("isUpdate", true);
-			req.setAttribute("user", user);
-			RequestDispatcher rd = req.getRequestDispatcher("/form.jsp");
-			rd.forward(req, resp);
-		} catch (SQLException e) {
-		}
-		
+		user = userDao.findByUserId(userId);
+		req.setAttribute("isUpdate", true);
+		req.setAttribute("user", user);
+		RequestDispatcher rd = req.getRequestDispatcher("/form.jsp");
+		rd.forward(req, resp);
+
 	}
 }

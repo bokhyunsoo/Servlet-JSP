@@ -7,19 +7,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import net.home.support.JdbcTemplate;
-import net.home.support.PreparedStatementSetter;
-import net.home.support.RowMapper;
+import net.home.support.jdbc.JdbcTemplate;
+import net.home.support.jdbc.PreparedStatementSetter;
+import net.home.support.jdbc.RowMapper;
 
 public class UserDAO {
 
-	public void addUser(User user) throws SQLException {
+	public void addUser(User user) {
 		JdbcTemplate template = new JdbcTemplate();
 		String sql = "insert into users values(?,?,?,?)";
 		template.executeUpdate(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 	}
 
-	public User findByUserId(String userId) throws SQLException {
+	public User findByUserId(String userId)  {
 		RowMapper<User> rm = new RowMapper<User>() {
 
 			@Override
@@ -35,21 +35,21 @@ public class UserDAO {
 
 	}
 
-	public void removeUser(String userId) throws SQLException {
+	public void removeUser(String userId) {
 		JdbcTemplate template = new JdbcTemplate();
 		String sql = "delete from users where userId = ?";
 		template.executeUpdate(sql, userId);
 
 	}
 
-	public void executeUpdate(User user) throws SQLException {
+	public void executeUpdate(User user) {
 		JdbcTemplate template = new JdbcTemplate();
 		String sql = "update users set password = ?, name = ?, email = ? where userId = ?";
 		template.executeUpdate(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
 
 	}
 
-	public List<User> findUsers() throws SQLException {
+	public List<User> findUsers() {
 		RowMapper<User> rm = new RowMapper<User>() {
 
 			@Override

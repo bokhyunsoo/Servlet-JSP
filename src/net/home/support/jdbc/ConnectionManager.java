@@ -1,4 +1,4 @@
-package net.home.support;
+package net.home.support.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
