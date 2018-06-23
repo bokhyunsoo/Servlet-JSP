@@ -23,6 +23,15 @@ public class UserDAOTest {
 	}
 	
 	@Test
+	public void findByUserId() throws Exception {
+		User user = UserTest.TEST_USER;
+		userDao.removeUser(user.getUserId());
+		userDao.addUser(UserTest.TEST_USER);
+		user = userDao.findByUserId("userId");
+		assertEquals(UserTest.TEST_USER, user);
+	}
+	
+	@Test
 	public void crud() throws Exception {
 		User user = UserTest.TEST_USER;
 		userDao.removeUser(user.getUserId());
@@ -31,11 +40,11 @@ public class UserDAOTest {
 		User dbUser = userDao.findByUserId(user.getUserId());
 		assertEquals(user, dbUser);
 		
-		/*User updateUser = new User(user.getUserId(), "uPassword", "update_name", "update@slipp.net");
-		userDao.updateUser(updateUser);
+		User updateUser = new User(user.getUserId(), "uPassword", "update_name", "update@slipp.net");
+		userDao.executeUpdate(updateUser);
 		
 		dbUser = userDao.findByUserId(updateUser.getUserId());
-		assertEquals(updateUser, dbUser);*/
+		assertEquals(updateUser, dbUser);
 	}
 	
 	@Test
@@ -47,10 +56,5 @@ public class UserDAOTest {
 		assertNull(dbUser);
 	}
 	
-	@Test
-	public void findByUserId() throws Exception {
-		User user = userDao.findByUserId("userId");
-		assertEquals(UserTest.TEST_USER, user);
-	}
 
 }
