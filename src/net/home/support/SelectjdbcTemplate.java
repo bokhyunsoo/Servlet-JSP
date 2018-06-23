@@ -3,24 +3,27 @@ package net.home.support;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.home.user.User;
-import net.home.user.UserDAO;
 
-public abstract class JdbcTemplate {
+public abstract class SelectjdbcTemplate {
 	
-	public void insert(String sql) throws SQLException{
-		
+	
+	public Object executeQuery(String sql) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			setParameters(pstmt);
 			
-			pstmt.executeUpdate();
+			rs = pstmt.executeQuery();
+			
+			return mapRow(rs);
 		}finally{
 			
 			if (pstmt != null){
@@ -30,9 +33,17 @@ public abstract class JdbcTemplate {
 			if (conn != null){
 				conn.close();
 			}
+			
+			if (rs != null){
+				conn.close();
+			}
+			
 		}
+		
 	}
 	
 	public abstract void setParameters(PreparedStatement pstmt) throws SQLException;
 	
+	
+	public abstract Object mapRow(ResultSet rs) throws SQLException;
 }

@@ -7,22 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.home.support.JdbcTemplate;
+import net.home.support.SelectjdbcTemplate;
 
 public class UserDAO {
-	
-	public Connection getConnection() {
-		String url = "jdbc:mysql://localhost:3308/home_dev?serverTimezone=UTC";
-		String id = "root";
-		String pw = "password";
-		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(url,id,pw);
-		}catch (Exception e){
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
 	
 	public void addUser(User user) throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(){
@@ -46,44 +33,32 @@ public class UserDAO {
 	
 
 	public User findByUserId(String userId) throws SQLException {
+		SelectjdbcTemplate template = new SelectjdbcTemplate() {
+			
+			@Override
+			public void setParameters(PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, userId);
+			}
+			
+			@Override
+			public Object mapRow(ResultSet rs) throws SQLException {
+				if(!rs.next()){
+					return null;
+				}
+				
+				return new User(rs.getString("userId"),
+						rs.getString("password"),
+						rs.getString("name"),
+						rs.getString("email"));
+			}
+		};
+		
 		String sql = "select * from users where userId = ?";
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		try{
-			conn = getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, userId);
-			
-			rs = pstmt.executeQuery();
-			
-			if(!rs.next()){
-				return null;
-			}
-			
-			return new User(rs.getString("userId"),
-					rs.getString("password"),
-					rs.getString("name"),
-					rs.getString("email"));
-		}finally{
-			
-			if (pstmt != null){
-				pstmt.close();
-			}
-			
-			if (conn != null){
-				conn.close();
-			}
-			
-			if (rs != null){
-				conn.close();
-			}
-			
-		}
+		return (User) template.executeQuery(sql);
 		
 	}
+
+	
 
 	public void removeUser(String userId) throws SQLException {
 		
